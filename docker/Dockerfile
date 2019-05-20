@@ -1,6 +1,8 @@
-FROM hysds/pge-gdal:latest
+FROM hysds/pge-gdal-base:latest
 MAINTAINER jlinick "Justin.P.Linick@jpl.nasa.gov"
 LABEL description="Generate products"
+
+sudo pip install rasterio
 
 USER ops
 
