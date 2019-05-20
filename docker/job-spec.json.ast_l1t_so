@@ -18,6 +18,10 @@
       "destination": "localize"
     },
     {
+      "name": "prod_id",
+      "destination": "context"
+    },
+    {
       "name": "starttime",
       "destination": "context"
     },
