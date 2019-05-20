@@ -2,10 +2,10 @@ FROM hysds/gdal-base:latest
 MAINTAINER jlinick "Justin.P.Linick@jpl.nasa.gov"
 LABEL description="Generate products"
 
+RUN yum -y install python-pip
+RUN sudo pip install rasterio
 
 USER ops
-
-RUN /bin/bash pip install rasterio
 
 COPY . /home/ops/verdi/ops/ast_l1t_so
 
