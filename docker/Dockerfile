@@ -5,7 +5,7 @@ LABEL description="Generate products"
 
 USER ops
 
-RUN sudo pip install rasterio
+RUN /bin/bash sudo pip install rasterio
 
 COPY . /home/ops/verdi/ops/ast_l1t_so
 
