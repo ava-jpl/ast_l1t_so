@@ -1,4 +1,4 @@
-FROM hysds/pge-gdal-base:latest
+FROM hysds/gdal-base:latest
 MAINTAINER jlinick "Justin.P.Linick@jpl.nasa.gov"
 LABEL description="Generate products"
 
