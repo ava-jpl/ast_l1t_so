@@ -48,7 +48,7 @@ def gen_ratio(hdf_path):
     msk = np.clip(np.ma.getmask(radiance['10']) + np.ma.getmask(radiance['11']) + np.ma.getmask(radiance['12']), 0, 1)
     ratio = np.logical_not(msk) * ratio
     #clip min
-    ratio = np.ma.clip(campion, 0.0, None)
+    ratio = np.ma.clip(ratio, 0.0, None)
     print('minimum: {}, maximum: {}'.format(np.ma.min(ratio), np.ma.max(ratio)))
     return ratio
 
@@ -70,7 +70,7 @@ def parser():
     Construct a parser to parse arguments
     @return argparse parser
     '''
-    parse = argparse.ArgumentParser(description="Generate kml from input files")
+    parse = argparse.ArgumentParser(description="Generates product from input file")
     parse.add_argument("-f", "--hdf", required=True, help="path of input hdf file", dest="hdf")
     parse.add_argument("-o", "--out", required=True, help="path to output file", dest="out")
     return parse
