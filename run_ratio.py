@@ -9,6 +9,7 @@ import numpy as np
 from osgeo import gdal
 
 GET_BANDS = ['10', '11', '12']
+BAND_REGEX = 'HDF4_EOS:EOS_SWATH:.*(?:ImageData|SurfaceRadianceTIR:Band|TIR_Swath:ImageData)([0-9]{1,2})$'
 
 def main(hdf_path, outpath):
     '''
@@ -34,16 +35,19 @@ def gen_ratio(hdf_path):
     print('loading %s' % hdf_path)
     src_ds = gdal.Open(hdf_path)
     sub = src_ds.GetSubDatasets()
-    #load the bands and apply the correction
-    reg = re.compile('HDF4_EOS:EOS_SWATH:.*(?:ImageData|SurfaceRadianceTIR:Band|TIR_Swath:ImageData)([\dNB]+)')
     for data in sub:
-        d = reg.search(data[0])
-        if d and int(d.group(1)) in bands:
-            band = d.group(1)
-            if band in GET_BANDS:
-                #print('loading band %s' % band)
-                raster = gdal.Open(data[0])
-                radiance[str(band)] = np.ma.masked_less_equal(np.array(raster.ReadAsArray().astype(np.float64)),0) * conversion[str(band)]
+        subdataset = str(data[0])
+        match = re.search(BAND_REGEX, subdataset)
+        if not match:
+            #print('{} not matching regex'.format(subdataset))
+            continue
+        band = match.group(1)
+        field = match.group(0)
+        if band not in GET_BANDS:
+            continue
+        #print('loading band %s' % band)
+        raster = gdal.Open(data[0])
+        radiance[str(band)] = np.ma.masked_less_equal(np.array(raster.ReadAsArray().astype(np.float64)),0) * conversion[str(band)]
     ratio = np.ma.subtract(np.ma.add(radiance['10'], radiance['12']), (2  * radiance['11']))
     msk = np.clip(np.ma.getmask(radiance['10']) + np.ma.getmask(radiance['11']) + np.ma.getmask(radiance['12']), 0, 1)
     ratio = np.logical_not(msk) * ratio
